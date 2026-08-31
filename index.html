@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Name — Portfolio</title>
+<title>Yifan Bai — Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -36,6 +36,15 @@
     font-weight: 300;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── BILINGUAL ─── */
+  .zh {
+    display: block;
+    font-size: 0.85em;
+    color: var(--grey-600);
+    line-height: 1.5;
+    margin-top: 2px;
   }
 
   /* ─── NAV ─── */
@@ -76,6 +85,13 @@
 
   .nav-links a:hover { color: var(--white); }
 
+  .nav-links a .zh {
+    font-size: 0.85em;
+    display: inline;
+    margin-top: 0;
+    margin-left: 2px;
+  }
+
   /* ─── HERO ─── */
   .hero {
     min-height: 100vh;
@@ -109,7 +125,7 @@
     font-size: 16px;
     font-weight: 300;
     color: var(--grey-400);
-    max-width: 420px;
+    max-width: 480px;
     line-height: 1.7;
   }
 
@@ -443,22 +459,25 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-name">Your Name</a>
+  <a href="#" class="nav-name">Yifan Bai</a>
   <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#work">Work <span class="zh">作品</span></a></li>
+    <li><a href="#about">About <span class="zh">关于</span></a></li>
+    <li><a href="#contact">Contact <span class="zh">联系</span></a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <p class="hero-label">CS student · Melbourne · 2026</p>
-  <h1 class="hero-name">Your<br>Name</h1>
-  <p class="hero-role">Building software that lives between logic and craft — currently studying at the University of Melbourne.</p>
+  <h1 class="hero-name">Yifan<br>Bai</h1>
+  <p class="hero-role">
+    Building software that lives between logic and craft — currently studying at the University of Melbourne.
+    <span class="zh">在逻辑与工艺之间构建软件 — 目前就读于墨尔本大学。</span>
+  </p>
   <div class="hero-scroll">
     <span class="hero-scroll-line"></span>
-    <span>Selected work below</span>
+    <span>Selected work below <span class="zh" style="display:inline; margin-left:4px;">精选作品</span></span>
   </div>
 </section>
 
@@ -466,7 +485,7 @@
 <section id="work">
   <div class="section-inner">
     <div class="section-header">
-      <span class="section-title">Work</span>
+      <span class="section-title">Work <span class="zh">作品</span></span>
       <span class="section-count">04 projects</span>
     </div>
     <div class="project-grid">
@@ -479,11 +498,17 @@
             <span class="tag">ML</span>
           </div>
         </div>
-        <h2 class="project-title">Project One</h2>
-        <p class="project-desc">A short description of what this project does and what problem it solves. Replace with your actual work.</p>
+        <h2 class="project-title">
+          Project One
+          <span class="zh">项目一</span>
+        </h2>
+        <p class="project-desc">
+          A short description of what this project does and what problem it solves. Replace with your actual work.
+          <span class="zh">该项目的简短描述，说明它的功能和解决的问题。请替换为实际内容。</span>
+        </p>
         <a href="#" class="project-link">
           <span class="project-link-line"></span>
-          View project
+          View project <span class="zh" style="display:inline; margin-left:4px;">查看项目</span>
         </a>
       </div>
 
@@ -495,11 +520,17 @@
             <span class="tag">Node</span>
           </div>
         </div>
-        <h2 class="project-title">Project Two</h2>
-        <p class="project-desc">A short description of what this project does and what problem it solves. Replace with your actual work.</p>
+        <h2 class="project-title">
+          Project Two
+          <span class="zh">项目二</span>
+        </h2>
+        <p class="project-desc">
+          A short description of what this project does and what problem it solves. Replace with your actual work.
+          <span class="zh">该项目的简短描述，说明它的功能和解决的问题。请替换为实际内容。</span>
+        </p>
         <a href="#" class="project-link">
           <span class="project-link-line"></span>
-          View project
+          View project <span class="zh" style="display:inline; margin-left:4px;">查看项目</span>
         </a>
       </div>
 
@@ -511,11 +542,17 @@
             <span class="tag">Systems</span>
           </div>
         </div>
-        <h2 class="project-title">Project Three</h2>
-        <p class="project-desc">A short description of what this project does and what problem it solves. Replace with your actual work.</p>
+        <h2 class="project-title">
+          Project Three
+          <span class="zh">项目三</span>
+        </h2>
+        <p class="project-desc">
+          A short description of what this project does and what problem it solves. Replace with your actual work.
+          <span class="zh">该项目的简短描述，说明它的功能和解决的问题。请替换为实际内容。</span>
+        </p>
         <a href="#" class="project-link">
           <span class="project-link-line"></span>
-          View project
+          View project <span class="zh" style="display:inline; margin-left:4px;">查看项目</span>
         </a>
       </div>
 
@@ -527,11 +564,17 @@
             <span class="tag">Algorithms</span>
           </div>
         </div>
-        <h2 class="project-title">Project Four</h2>
-        <p class="project-desc">A short description of what this project does and what problem it solves. Replace with your actual work.</p>
+        <h2 class="project-title">
+          Project Four
+          <span class="zh">项目四</span>
+        </h2>
+        <p class="project-desc">
+          A short description of what this project does and what problem it solves. Replace with your actual work.
+          <span class="zh">该项目的简短描述，说明它的功能和解决的问题。请替换为实际内容。</span>
+        </p>
         <a href="#" class="project-link">
           <span class="project-link-line"></span>
-          View project
+          View project <span class="zh" style="display:inline; margin-left:4px;">查看项目</span>
         </a>
       </div>
 
@@ -543,26 +586,35 @@
 <section id="about">
   <div class="section-inner">
     <div class="section-header">
-      <span class="section-title">About</span>
+      <span class="section-title">About <span class="zh">关于</span></span>
     </div>
     <div class="about-grid">
       <div class="about-sidebar">
         <div class="about-status">
-          <span>Currently</span>
+          <span>Currently <span class="zh" style="display:inline;">目前</span></span>
           BSc Computer Science<br>University of Melbourne
+          <span class="zh">计算机科学学士<br>墨尔本大学</span>
         </div>
         <div class="about-status">
-          <span>Based in</span>
+          <span>Based in <span class="zh" style="display:inline;">所在地</span></span>
           Melbourne, Australia
+          <span class="zh">澳大利亚，墨尔本</span>
         </div>
         <div class="about-status">
-          <span>Expected graduation</span>
+          <span>Expected graduation <span class="zh" style="display:inline;">预计毕业</span></span>
           November 2027
+          <span class="zh">2027年11月</span>
         </div>
       </div>
       <div class="about-text">
-        <p>Replace this with 2–3 sentences about yourself, what you're interested in, and what kind of work you want to do. Keep it direct — no need to sell anything.</p>
-        <p>A second paragraph if you have more to say. Could be about what you're currently exploring, or what draws you to this kind of work.</p>
+        <p>
+          Replace this with 2–3 sentences about yourself, what you're interested in, and what kind of work you want to do. Keep it direct — no need to sell anything.
+          <span class="zh">在此填写2–3句关于您自己的介绍，包括您的兴趣方向以及希望从事的工作类型。保持简洁直接即可。</span>
+        </p>
+        <p>
+          A second paragraph if you have more to say. Could be about what you're currently exploring, or what draws you to this kind of work.
+          <span class="zh">如有更多想说的，可以在此添加第二段。可以聊聊您目前正在探索的方向，或是吸引您从事这类工作的原因。</span>
+        </p>
       </div>
     </div>
   </div>
@@ -572,11 +624,11 @@
 <section id="skills">
   <div class="section-inner">
     <div class="section-header">
-      <span class="section-title">Skills</span>
+      <span class="section-title">Skills <span class="zh">技能</span></span>
     </div>
     <div class="skills-grid">
       <div class="skill-group">
-        <p class="skill-group-title">Languages</p>
+        <p class="skill-group-title">Languages <span class="zh" style="display:inline; margin-left:4px;">编程语言</span></p>
         <ul class="skill-list">
           <li>Python</li>
           <li>JavaScript</li>
@@ -586,7 +638,7 @@
         </ul>
       </div>
       <div class="skill-group">
-        <p class="skill-group-title">Tools & Frameworks</p>
+        <p class="skill-group-title">Tools & Frameworks <span class="zh" style="display:inline; margin-left:4px;">工具与框架</span></p>
         <ul class="skill-list">
           <li>React</li>
           <li>Node.js</li>
@@ -596,12 +648,12 @@
         </ul>
       </div>
       <div class="skill-group">
-        <p class="skill-group-title">Areas</p>
+        <p class="skill-group-title">Areas <span class="zh" style="display:inline; margin-left:4px;">领域</span></p>
         <ul class="skill-list">
-          <li>Systems programming</li>
-          <li>Web development</li>
-          <li>Machine learning</li>
-          <li>Algorithms</li>
+          <li>Systems programming <span class="zh">系统编程</span></li>
+          <li>Web development <span class="zh">网页开发</span></li>
+          <li>Machine learning <span class="zh">机器学习</span></li>
+          <li>Algorithms <span class="zh">算法</span></li>
         </ul>
       </div>
     </div>
@@ -611,18 +663,20 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <h2 class="contact-heading">Get in touch</h2>
-    <a href="mailto:your@email.com" class="contact-email">your@email.com</a>
+    <h2 class="contact-heading">
+      Get in touch
+      <span class="zh">联系我</span>
+    </h2>
+    <a href="mailto:yifanbai2026@outlook.com" class="contact-email">yifanbai2026@outlook.com</a>
     <div class="contact-links">
-      <a href="#" class="contact-link">GitHub</a>
-      <a href="#" class="contact-link">LinkedIn</a>
+      <a href="https://github.com/baiyifan1999" class="contact-link">GitHub</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <span class="footer-copy">© 2026 Your Name</span>
-  <span class="footer-copy">Melbourne, Australia</span>
+  <span class="footer-copy">© 2026 Yifan Bai <span class="zh" style="display:inline; margin-left:4px;">白一凡</span></span>
+  <span class="footer-copy">Melbourne, Australia <span class="zh" style="display:inline; margin-left:4px;">澳大利亚，墨尔本</span></span>
 </footer>
 
 </body>
