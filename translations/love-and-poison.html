@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love and Poison — Yifan Bai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey-200: #e0e0e0;
+    --grey-400: #c0c0c0;
+    --grey-600: #484848;
+    --grey-800: #1a1a1a;
+    --grey-900: #0d0d0d;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --nav-h: 56px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .zh {
+    display: block;
+    font-size: 0.85em;
+    color: var(--grey-400);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: var(--black);
+    border-bottom: 1px solid var(--grey-800);
+    z-index: 100;
+  }
+  .nav-name {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.15s;
+  }
+  .nav-back:hover { color: var(--white); }
+  .page-hero {
+    padding: calc(var(--nav-h) + 80px) 40px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--grey-800);
+  }
+  .page-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-400);
+    letter-spacing: 0.08em;
+    margin-bottom: 24px;
+  }
+  .page-title {
+    font-size: clamp(40px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+  }
+  .page-subtitle {
+    margin-top: 32px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    letter-spacing: 0.04em;
+  }
+  .page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .placeholder {
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--grey-400);
+    line-height: 1.8;
+  }
+  .placeholder .zh {
+    display: inline;
+    margin-left: 6px;
+  }
+  footer {
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--grey-800);
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .page-hero { padding: calc(var(--nav-h) + 48px) 20px 48px; }
+    .page-content { padding: 56px 20px; }
+    footer { padding: 20px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-name">Yifan Bai</a>
+  <a href="/" class="nav-back">← Back <span class="zh" style="display:inline; margin-left:2px;">返回</span></a>
+</nav>
+
+<div class="page-hero">
+  <p class="page-label">Translation · Biography · 2024</p>
+  <h1 class="page-title">Love and<br>Poison</h1>
+  <p class="page-subtitle">Suede · Biography <span class="zh" style="display:inline; margin-left:8px;">Suede乐队传记</span></p>
+</div>
+
+<div class="page-content">
+  <p class="placeholder">
+    Content coming soon. <span class="zh">内容即将更新。</span>
+  </p>
+</div>
+
+<footer>
+  <span class="footer-copy">© 2026 Yifan Bai <span class="zh" style="display:inline; margin-left:4px;">白一凡</span></span>
+  <span class="footer-copy">Melbourne, Australia <span class="zh" style="display:inline; margin-left:4px;">澳大利亚，墨尔本</span></span>
+</footer>
+
+</body>
+</html>
