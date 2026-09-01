@@ -76,7 +76,7 @@
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;background:var(--bg);color:var(--ink);font-family: var(--font-body);
-  font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased;letter-spacing:.1px}
+  font-size:16px;line-height:1.85;font-weight:300;-webkit-font-smoothing:antialiased;letter-spacing:.1px}
 
 /* ---------- layout ---------- */
 .layout{display:flex;min-height:100vh}
@@ -131,18 +131,18 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family: var(--font-body
 
 /* ---------- modules ---------- */
 .module{padding-top:14px;margin-bottom:8px;scroll-margin-top:64px}
-.module+.module{border-top:1px dashed var(--border);margin-top:46px;padding-top:40px}
+.module+.module{border-top:1px solid var(--border);margin-top:46px;padding-top:40px}
 .m-head{margin-bottom:22px}
 .m-eyebrow{font-family: var(--font-mono);font-size:11.5px;letter-spacing:1px;text-transform:uppercase;
   color:var(--accent);font-weight:600}
-.m-head h2{font-size:27px;line-height:1.25;margin:8px 0 6px;letter-spacing:.2px}
+.m-head h2{font-size:27px;line-height:1.25;font-weight:400;margin:8px 0 6px;letter-spacing:.2px}
 .m-sub{color:var(--ink-soft);font-size:14.5px;margin:0}
 .sub{scroll-margin-top:64px;margin:36px 0}
-.sub h3{font-size:19.5px;margin:0 0 12px;padding-bottom:7px;border-bottom:2px solid var(--border);
+.sub h3{font-size:19.5px;font-weight:400;margin:0 0 12px;padding-bottom:7px;border-bottom:1px solid var(--border);
   letter-spacing:.2px}
 .sub h4{font-size:15.5px;margin:22px 0 8px;color:var(--ink)}
 p{margin:16px 0}
-b{font-weight:650}
+b{font-weight:500}
 .muted{color:var(--muted)}
 
 /* ---------- lists ---------- */

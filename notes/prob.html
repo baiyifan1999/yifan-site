@@ -80,6 +80,7 @@ body{
   margin:0; background:var(--bg); color:var(--text);
   font-family: var(--font-body);
   font-size:16px; line-height:1.85; -webkit-font-smoothing:antialiased;
+font-weight:300;
 }
 /* ---------- 顶栏 ---------- */
 header{
@@ -87,7 +88,7 @@ header{
   background:var(--surface); border-bottom:1px solid var(--border);
   display:flex; align-items:center; gap:16px; padding:0 18px;
 }
-header .logo{font-weight:700; font-size:15px; white-space:nowrap; color:var(--text);}
+header .logo{font-weight:400; font-size:15px; white-space:nowrap; color:var(--text);}
 header .logo small{display:block; font-weight:400; font-size:11px; color:var(--text-dim);}
 .search-wrap{flex:1; max-width:520px; position:relative;}
 #search{
@@ -125,13 +126,13 @@ main{
 }
 section.module{margin-bottom:64px; scroll-margin-top:70px;}
 section.module>h2{
-  font-size:25px; margin:0 0 6px; padding-bottom:10px; border-bottom:2px solid var(--accent);
+  font-size:25px; font-weight:400; margin:64px 0 6px; padding-top:32px; padding-bottom:10px; border-top:1px solid var(--border); border-bottom:none;
   color:var(--text); scroll-margin-top:70px;
 }
 section.module>.mod-sub{color:var(--text-dim); font-size:13.5px; margin:0 0 22px;}
 .topic{margin:36px 0; scroll-margin-top:70px;}
 .topic>h3{
-  font-size:19px; margin:0 0 12px; color:var(--text); padding-left:11px;
+  font-size:19px; font-weight:400; margin:36px 0 12px; color:var(--text); padding-left:11px;
   border-left:4px solid var(--accent); scroll-margin-top:70px;
 }
 .topic>h4{font-size:15.5px; margin:18px 0 8px; color:var(--text);}
@@ -139,7 +140,7 @@ p{margin:16px 0;}
 ul,ol{margin:9px 0; padding-left:24px;} li{margin:8px 0;}
 b,strong{color:var(--text);}
 .en{color:var(--text-dim); font-style:normal;}
-code{background:var(--surface-2); padding:1px 6px; border-radius:5px; font-size:13.5px; font-family:"SF Mono",Consolas,Monaco,monospace;}
+code{background:var(--surface-2); padding:1px 6px; border-radius:5px; font-size:13.5px; font-family:'DM Mono',monospace;}
 /* 卡片 */
 .card{border-radius:10px; padding:20px 22px 20px 24px; margin:24px 0; border:1px solid var(--border);}
 .card .tag{display:inline-block; font-size:11.5px; font-weight:700; padding:1px 9px; border-radius:20px; margin-bottom:7px; letter-spacing:.3px;}
