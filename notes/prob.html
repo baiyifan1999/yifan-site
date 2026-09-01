@@ -79,7 +79,7 @@ html{scroll-behavior:smooth;}
 body{
   margin:0; background:var(--bg); color:var(--text);
   font-family: var(--font-body);
-  font-size:16px; line-height:1.75; -webkit-font-smoothing:antialiased;
+  font-size:16px; line-height:1.85; -webkit-font-smoothing:antialiased;
 }
 /* ---------- 顶栏 ---------- */
 header{
@@ -121,27 +121,27 @@ nav#toc a.active{background:var(--accent-soft); color:var(--accent); font-weight
 nav#toc a.dimmed{opacity:.32;}
 /* ---------- 主内容 ---------- */
 main{
-  margin-left:var(--sidebar-w); margin-top:58px; padding:34px 46px 120px; max-width:920px;
+  margin-left:var(--sidebar-w); margin-top:58px; padding:56px 48px 140px; max-width:920px;
 }
-section.module{margin-bottom:46px; scroll-margin-top:70px;}
+section.module{margin-bottom:64px; scroll-margin-top:70px;}
 section.module>h2{
   font-size:25px; margin:0 0 6px; padding-bottom:10px; border-bottom:2px solid var(--accent);
   color:var(--text); scroll-margin-top:70px;
 }
 section.module>.mod-sub{color:var(--text-dim); font-size:13.5px; margin:0 0 22px;}
-.topic{margin:30px 0; scroll-margin-top:70px;}
+.topic{margin:36px 0; scroll-margin-top:70px;}
 .topic>h3{
   font-size:19px; margin:0 0 12px; color:var(--text); padding-left:11px;
   border-left:4px solid var(--accent); scroll-margin-top:70px;
 }
 .topic>h4{font-size:15.5px; margin:18px 0 8px; color:var(--text);}
-p{margin:9px 0;}
-ul,ol{margin:9px 0; padding-left:24px;} li{margin:4px 0;}
+p{margin:16px 0;}
+ul,ol{margin:9px 0; padding-left:24px;} li{margin:8px 0;}
 b,strong{color:var(--text);}
 .en{color:var(--text-dim); font-style:normal;}
 code{background:var(--surface-2); padding:1px 6px; border-radius:5px; font-size:13.5px; font-family:"SF Mono",Consolas,Monaco,monospace;}
 /* 卡片 */
-.card{border-radius:10px; padding:13px 16px; margin:13px 0; border:1px solid var(--border);}
+.card{border-radius:10px; padding:20px 22px 20px 24px; margin:24px 0; border:1px solid var(--border);}
 .card .tag{display:inline-block; font-size:11.5px; font-weight:700; padding:1px 9px; border-radius:20px; margin-bottom:7px; letter-spacing:.3px;}
 .def{background:var(--def-bg); border-color:var(--def);} .def .tag{background:var(--def); color:#fff;}
 .thm{background:var(--thm-bg); border-color:var(--thm);} .thm .tag{background:var(--thm); color:#fff;}
@@ -151,7 +151,7 @@ code{background:var(--surface-2); padding:1px 6px; border-radius:5px; font-size:
 /* 公式块 */
 .formula{
   background:var(--formula-bg); border:1px solid var(--formula-border); border-radius:9px;
-  padding:12px 16px; margin:13px 0; overflow-x:auto; text-align:center;
+  padding:18px 20px; margin:18px 0; overflow-x:auto; text-align:center;
 }
 .formula .katex-display{margin:0;}
 /* 图 */
@@ -177,7 +177,7 @@ mark{background:var(--mark); color:inherit; border-radius:3px; padding:0 2px;}
   nav#toc{transform:translateX(-100%); transition:transform .25s; box-shadow:2px 0 16px rgba(0,0,0,.18);}
   body.nav-open nav#toc{transform:translateX(0);}
   body.nav-open .backdrop{display:block; position:fixed; inset:58px 0 0 0; background:rgba(0,0,0,.4); z-index:85;}
-  main{margin-left:0; padding:24px 18px 100px;}
+  main{margin-left:0; padding:24px 18px 140px;}
   header .logo small{display:none;}
 }
 </style>
