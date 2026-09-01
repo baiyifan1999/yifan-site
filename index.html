@@ -228,6 +228,7 @@
     gap: 20px;
     cursor: pointer;
     transition: background 0.15s;
+    position: relative;
   }
 
   .project-item:hover { background: var(--grey-900); }
@@ -287,6 +288,12 @@
   }
 
   .project-link:hover { color: var(--white); }
+
+  .project-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
 
   .project-link-line {
     width: 20px;
