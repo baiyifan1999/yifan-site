@@ -925,27 +925,40 @@
 
   // ─── PRESET EXAMPLE ──────────────────────────────────────────────────────────
   /**
-   * Classic 4-candidate, 11-ballot example demonstrating 3-round IRV:
+   * Britpop 4-candidate, 13-ballot example demonstrating 3-round IRV:
    *
-   * Round 1: Alice 4, Carol 3, Bob 2, Dave 2  → eliminate Bob (tied with Dave; listed first)
-   * Round 2: Alice 5, Carol 4, Dave 2          → eliminate Dave
-   * Round 3: Alice 6, Carol 5                  → Alice wins (>5.5)
+   * Round 1: Suede 4, Blur 4, Pulp 3, Oasis 2  → eliminate Oasis (lowest)
+   * Round 2: Suede 5, Blur 5, Pulp 3            → eliminate Pulp (lowest)
+   * Round 3: Suede 7, Blur 6                    → Suede wins (7 > 6.5)
+   *
+   * Redistribution story:
+   *   Oasis voters split evenly → 1 to Blur, 1 to Suede
+   *   Pulp voters lean Suede   → 2 to Suede, 1 to Blur
    */
   function loadExample() {
-    candidates = ['Alice', 'Bob', 'Carol', 'Dave'];
+    candidates = ['Suede', 'Blur', 'Oasis', 'Pulp'];
 
     votes = [
-      ['Alice', 'Bob',   'Carol', 'Dave'], // Alice first choice
-      ['Alice', 'Bob',   'Carol', 'Dave'],
-      ['Alice', 'Carol', 'Bob',   'Dave'],
-      ['Alice', 'Carol', 'Bob',   'Dave'],
-      ['Bob',   'Alice', 'Carol', 'Dave'], // Bob first choice — goes to Alice on elim
-      ['Bob',   'Carol', 'Alice', 'Dave'], // Bob → Carol on elim
-      ['Carol', 'Bob',   'Alice', 'Dave'], // Carol first choice
-      ['Carol', 'Bob',   'Alice', 'Dave'],
-      ['Carol', 'Bob',   'Alice', 'Dave'],
-      ['Dave',  'Bob',   'Alice', 'Carol'], // Dave → Bob on elim (round 2: Alice)
-      ['Dave',  'Carol', 'Bob',   'Alice'], // Dave → Carol on elim
+      // Suede first-choice (4 votes)
+      ['Suede', 'Blur',  'Pulp',  'Oasis'],
+      ['Suede', 'Blur',  'Pulp',  'Oasis'],
+      ['Suede', 'Pulp',  'Blur',  'Oasis'],
+      ['Suede', 'Oasis', 'Blur',  'Pulp' ],
+
+      // Blur first-choice (4 votes) — secondary prefs lean Suede
+      ['Blur',  'Suede', 'Pulp',  'Oasis'],
+      ['Blur',  'Suede', 'Pulp',  'Oasis'],
+      ['Blur',  'Suede', 'Oasis', 'Pulp' ],
+      ['Blur',  'Pulp',  'Suede', 'Oasis'],
+
+      // Oasis first-choice (2 votes) — split on redistribution
+      ['Oasis', 'Blur',  'Suede', 'Pulp' ], // → Blur after Oasis eliminated
+      ['Oasis', 'Suede', 'Pulp',  'Blur' ], // → Suede after Oasis eliminated
+
+      // Pulp first-choice (3 votes) — lean Suede on redistribution
+      ['Pulp',  'Suede', 'Blur',  'Oasis'],  // → Suede after Pulp eliminated
+      ['Pulp',  'Suede', 'Oasis', 'Blur' ],  // → Suede after Pulp eliminated
+      ['Pulp',  'Blur',  'Suede', 'Oasis'],  // → Blur after Pulp eliminated
     ];
 
     clearError();
