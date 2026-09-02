@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparse Matrix Calculator — Yifan Bai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey-100: #f0f0f0;
+    --grey-200: #e0e0e0;
+    --grey-400: #c0c0c0;
+    --grey-600: #484848;
+    --grey-800: #1a1a1a;
+    --grey-900: #0d0d0d;
+
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+
+    --nav-h: 56px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: var(--black);
+    border-bottom: 1px solid var(--grey-800);
+    z-index: 100;
+  }
+
+  .nav-name {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--grey-400);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 40vh;
+    padding: calc(var(--nav-h) + 80px) 40px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--grey-800);
+  }
+
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--grey-400);
+    letter-spacing: 0.08em;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-name {
+    font-size: clamp(36px, 6vw, 80px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.22s forwards;
+  }
+
+  .hero-role {
+    margin-top: 32px;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--grey-400);
+    max-width: 560px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.36s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-label, .hero-name, .hero-role { opacity: 1; animation: none; }
+  }
+
+  /* ─── TOOL AREA ─── */
+  .tool-outer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 40px;
+  }
+
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  /* Two-column layout */
+  .tool-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--grey-800);
+    border: 1px solid var(--grey-800);
+    margin-bottom: 1px;
+  }
+
+  .panel {
+    background: var(--black);
+    padding: 32px 40px;
+  }
+
+  /* Result panel */
+  .result-panel {
+    background: var(--black);
+    border: 1px solid var(--grey-800);
+    border-top: none;
+    padding: 32px 40px;
+  }
+
+  /* ─── INPUTS ─── */
+  input[type="number"],
+  input[type="text"] {
+    background: transparent;
+    border: 1px solid var(--grey-800);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 8px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  input[type="number"]:focus,
+  input[type="text"]:focus {
+    border-color: var(--grey-400);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    opacity: 0.3;
+  }
+
+  /* ─── BUTTONS ─── */
+  button {
+    background: transparent;
+    border: 1px solid var(--grey-600);
+    color: var(--grey-400);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 8px 16px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    border-color: var(--white);
+    color: var(--white);
+  }
+
+  button.active {
+    border-color: var(--grey-400);
+    color: var(--white);
+  }
+
+  /* ─── DIMENSION ROW ─── */
+  .dim-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dim-row label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    white-space: nowrap;
+  }
+
+  .dim-row input {
+    width: 60px;
+  }
+
+  /* ─── MATRIX GRID INPUT ─── */
+  .matrix-grid-wrap {
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  .matrix-grid-input {
+    display: inline-grid;
+    gap: 4px;
+  }
+
+  .matrix-grid-input input {
+    width: 44px;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 12px;
+  }
+
+  /* ─── SET BUTTONS ROW ─── */
+  .set-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── CURRENT MATRICES DISPLAY ─── */
+  .matrices-display {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .matrix-box h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  .matrix-display {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-200);
+    line-height: 1.8;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ─── OPERATIONS ─── */
+  .target-toggle {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+
+  .ops-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .op-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .op-header {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+  }
+
+  .op-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .op-row input {
+    width: 56px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .op-row label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+
+  /* ─── RESULT ─── */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+
+  .result-box h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+
+  .compare-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--grey-800);
+  }
+
+  .compare-result {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--grey-400);
+  }
+
+  /* ─── LOG ─── */
+  .log-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .op-log {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .log-entry {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    border-left: 2px solid var(--grey-800);
+    padding-left: 12px;
+    line-height: 1.5;
+  }
+
+  .log-empty {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-600);
+    padding-left: 14px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--grey-800);
+  }
+
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+
+    .hero { padding: calc(var(--nav-h) + 48px) 20px 48px; }
+
+    .tool-outer { padding: 40px 20px; }
+
+    .tool-columns { grid-template-columns: 1fr; }
+
+    .matrices-display { grid-template-columns: 1fr; }
+
+    .result-grid { grid-template-columns: 1fr; }
+
+    footer { padding: 20px; flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/index.html" class="nav-name">Yifan Bai</a>
+  <ul class="nav-links">
+    <li><a href="/#work">Work</a></li>
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-label">tools / sparse-matrix</p>
+  <h1 class="hero-name">Sparse Matrix Calculator</h1>
+  <p class="hero-role">Interactive port of COMP10002 Assignment 2 — CSR representation, O(n+k) space complexity</p>
+</section>
+
+<!-- TOOL -->
+<div class="tool-outer">
+
+  <div class="tool-columns">
+
+    <!-- LEFT: Matrix Input -->
+    <div class="panel">
+      <p class="panel-label">INPUT</p>
+
+      <div class="dim-row">
+        <label for="dim-n">n × n</label>
+        <input type="number" id="dim-n" value="3" min="2" max="10">
+        <button id="btn-resize">Resize</button>
+      </div>
+
+      <div class="matrix-grid-wrap">
+        <div class="matrix-grid-input" id="grid-input"></div>
+      </div>
+
+      <div class="set-row">
+        <button id="btn-set-a">Set as Matrix A</button>
+        <button id="btn-set-b">Set as Matrix B</button>
+      </div>
+
+      <div class="matrices-display">
+        <div class="matrix-box">
+          <h4>MATRIX A</h4>
+          <div class="matrix-display" id="disp-a">—</div>
+        </div>
+        <div class="matrix-box">
+          <h4>MATRIX B</h4>
+          <div class="matrix-display" id="disp-b">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Operations -->
+    <div class="panel">
+      <p class="panel-label">OPERATIONS</p>
+
+      <div class="target-toggle">
+        <button id="target-a" class="active" onclick="setTarget('A')">Target A</button>
+        <button id="target-b" onclick="setTarget('B')">Target B</button>
+      </div>
+
+      <div class="ops-list">
+
+        <!-- set -->
+        <div class="op-item">
+          <div class="op-header">s — set cell</div>
+          <div class="op-row">
+            <label>row</label><input type="number" id="s-r" value="0" min="0">
+            <label>col</label><input type="number" id="s-c" value="0" min="0">
+            <label>val</label><input type="number" id="s-v" value="0">
+            <button onclick="applyOp('s')">Apply</button>
+          </div>
+        </div>
+
+        <!-- swap cells -->
+        <div class="op-item">
+          <div class="op-header">S — swap cells</div>
+          <div class="op-row">
+            <label>r1</label><input type="number" id="S-r1" value="0" min="0">
+            <label>c1</label><input type="number" id="S-c1" value="0" min="0">
+            <label>r2</label><input type="number" id="S-r2" value="1" min="0">
+            <label>c2</label><input type="number" id="S-c2" value="1" min="0">
+            <button onclick="applyOp('S')">Apply</button>
+          </div>
+        </div>
+
+        <!-- scale -->
+        <div class="op-item">
+          <div class="op-header">m — scale (multiply all by k)</div>
+          <div class="op-row">
+            <label>k</label><input type="number" id="m-k" value="2">
+            <button onclick="applyOp('m')">Apply</button>
+          </div>
+        </div>
+
+        <!-- shift -->
+        <div class="op-item">
+          <div class="op-header">a — shift (add k to non-zero)</div>
+          <div class="op-row">
+            <label>k</label><input type="number" id="a-k" value="1">
+            <button onclick="applyOp('a')">Apply</button>
+          </div>
+        </div>
+
+        <!-- copy row -->
+        <div class="op-item">
+          <div class="op-header">r — copy row</div>
+          <div class="op-row">
+            <label>from</label><input type="number" id="r-r1" value="0" min="0">
+            <label>to</label><input type="number" id="r-r2" value="1" min="0">
+            <button onclick="applyOp('r')">Apply</button>
+          </div>
+        </div>
+
+        <!-- copy col -->
+        <div class="op-item">
+          <div class="op-header">c — copy col</div>
+          <div class="op-row">
+            <label>from</label><input type="number" id="c-c1" value="0" min="0">
+            <label>to</label><input type="number" id="c-c2" value="1" min="0">
+            <button onclick="applyOp('c')">Apply</button>
+          </div>
+        </div>
+
+        <!-- swap rows -->
+        <div class="op-item">
+          <div class="op-header">R — swap rows</div>
+          <div class="op-row">
+            <label>r1</label><input type="number" id="R-r1" value="0" min="0">
+            <label>r2</label><input type="number" id="R-r2" value="1" min="0">
+            <button onclick="applyOp('R')">Apply</button>
+          </div>
+        </div>
+
+        <!-- swap cols -->
+        <div class="op-item">
+          <div class="op-header">C — swap cols</div>
+          <div class="op-row">
+            <label>c1</label><input type="number" id="C-c1" value="0" min="0">
+            <label>c2</label><input type="number" id="C-c2" value="1" min="0">
+            <button onclick="applyOp('C')">Apply</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-panel">
+    <p class="panel-label">RESULT</p>
+
+    <div class="compare-row">
+      <button onclick="compareAB()">Compare A = B?</button>
+      <span class="compare-result" id="compare-result"></span>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-box">
+        <h4>COMPACT GRID</h4>
+        <div class="matrix-display" id="result-grid-disp">—</div>
+      </div>
+      <div class="result-box">
+        <h4>COORDINATE LIST</h4>
+        <div class="matrix-display" id="result-coord-disp">—</div>
+      </div>
+    </div>
+
+    <div class="log-label">OPERATION LOG</div>
+    <div class="op-log" id="op-log">
+      <span class="log-empty">no operations applied yet</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2026 Yifan Bai</span>
+  <span class="footer-copy">Melbourne, Australia</span>
+</footer>
+
+<script>
+  /* ── State ── */
+  let n = 3;
+  let matA = makeZero(n);
+  let matB = makeZero(n);
+  let target = 'A';
+  let lastResult = null;
+  const log = [];
+
+  function makeZero(size) {
+    return Array.from({length: size}, () => new Array(size).fill(0));
+  }
+
+  function cloneMatrix(m) {
+    return m.map(row => [...row]);
+  }
+
+  /* ── Grid rendering ── */
+  function buildInputGrid(size) {
+    const grid = document.getElementById('grid-input');
+    grid.style.gridTemplateColumns = `repeat(${size}, 44px)`;
+    grid.innerHTML = '';
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        const inp = document.createElement('input');
+        inp.type = 'number';
+        inp.value = 0;
+        inp.id = `cell-${r}-${c}`;
+        grid.appendChild(inp);
+      }
+    }
+  }
+
+  function readInputGrid() {
+    const mat = makeZero(n);
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        const v = parseFloat(document.getElementById(`cell-${r}-${c}`).value) || 0;
+        mat[r][c] = v;
+      }
+    }
+    return mat;
+  }
+
+  function fillInputGrid(mat) {
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        const el = document.getElementById(`cell-${r}-${c}`);
+        if (el) el.value = mat[r][c];
+      }
+    }
+  }
+
+  /* ── Display format ── */
+  function allSingleDigit(mat) {
+    for (const row of mat)
+      for (const v of row)
+        if (Math.abs(v) > 9 || !Number.isInteger(v)) return false;
+    return true;
+  }
+
+  function compactGrid(mat) {
+    const size = mat.length;
+    if (size === 0) return '(empty)';
+    const width = allSingleDigit(mat) ? 2 : 6;
+    return mat.map(row =>
+      row.map(v => String(v).padStart(width)).join(' ')
+    ).join('\n');
+  }
+
+  function coordList(mat) {
+    const lines = [];
+    for (let r = 0; r < mat.length; r++)
+      for (let c = 0; c < mat[r].length; c++)
+        if (mat[r][c] !== 0)
+          lines.push(`(${r},${c})=${mat[r][c]}`);
+    return lines.length ? lines.join('\n') : '(all zero)';
+  }
+
+  function displayMatrix(mat) {
+    return compactGrid(mat);
+  }
+
+  function updateMatrixDisplays() {
+    document.getElementById('disp-a').textContent = matA.length ? displayMatrix(matA) : '—';
+    document.getElementById('disp-b').textContent = matB.length ? displayMatrix(matB) : '—';
+  }
+
+  function updateResultDisplay(mat) {
+    lastResult = mat;
+    document.getElementById('result-grid-disp').textContent = displayMatrix(mat);
+    document.getElementById('result-coord-disp').textContent = coordList(mat);
+  }
+
+  /* ── CSR export (for reference) ── */
+  function toCSR(mat) {
+    const size = mat.length;
+    const vals = [], cidx = [], rptr = [0];
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (mat[r][c] !== 0) { vals.push(mat[r][c]); cidx.push(c); }
+      }
+      rptr.push(vals.length);
+    }
+    return { rows: size, cols: size, nnz: vals.length, vals, cidx, rptr };
+  }
+
+  /* ── Operations (pure, return new matrix) ── */
+  function opSet(mat, r, c, v) {
+    if (r < 0 || r >= mat.length || c < 0 || c >= mat.length) return mat;
+    const m = cloneMatrix(mat);
+    m[r][c] = v;
+    return m;
+  }
+
+  function opSwapCells(mat, r1, c1, r2, c2) {
+    if ([r1,c1,r2,c2].some(x => x < 0 || x >= mat.length)) return mat;
+    const m = cloneMatrix(mat);
+    [m[r1][c1], m[r2][c2]] = [m[r2][c2], m[r1][c1]];
+    return m;
+  }
+
+  function opScale(mat, k) {
+    return mat.map(row => row.map(v => v * k));
+  }
+
+  function opShift(mat, k) {
+    return mat.map(row => row.map(v => v !== 0 ? v + k : 0));
+  }
+
+  function opCopyRow(mat, r1, r2) {
+    if ([r1,r2].some(x => x < 0 || x >= mat.length)) return mat;
+    const m = cloneMatrix(mat);
+    m[r2] = [...m[r1]];
+    return m;
+  }
+
+  function opCopyCol(mat, c1, c2) {
+    if ([c1,c2].some(x => x < 0 || x >= mat.length)) return mat;
+    const m = cloneMatrix(mat);
+    for (let r = 0; r < mat.length; r++) m[r][c2] = m[r][c1];
+    return m;
+  }
+
+  function opSwapRows(mat, r1, r2) {
+    if ([r1,r2].some(x => x < 0 || x >= mat.length)) return mat;
+    const m = cloneMatrix(mat);
+    [m[r1], m[r2]] = [m[r2], m[r1]];
+    return m;
+  }
+
+  function opSwapCols(mat, c1, c2) {
+    if ([c1,c2].some(x => x < 0 || x >= mat.length)) return mat;
+    const m = cloneMatrix(mat);
+    for (let r = 0; r < mat.length; r++) [m[r][c1], m[r][c2]] = [m[r][c2], m[r][c1]];
+    return m;
+  }
+
+  /* ── Apply operation ── */
+  function applyOp(op) {
+    const mat = target === 'A' ? cloneMatrix(matA) : cloneMatrix(matB);
+    let result, desc;
+
+    if (op === 's') {
+      const r = parseInt(document.getElementById('s-r').value);
+      const c = parseInt(document.getElementById('s-c').value);
+      const v = parseFloat(document.getElementById('s-v').value);
+      result = opSet(mat, r, c, v);
+      desc = `s ${r} ${c} ${v}  →  set ${target}[${r}][${c}] = ${v}`;
+
+    } else if (op === 'S') {
+      const r1 = parseInt(document.getElementById('S-r1').value);
+      const c1 = parseInt(document.getElementById('S-c1').value);
+      const r2 = parseInt(document.getElementById('S-r2').value);
+      const c2 = parseInt(document.getElementById('S-c2').value);
+      result = opSwapCells(mat, r1, c1, r2, c2);
+      desc = `S ${r1} ${c1} ${r2} ${c2}  →  swap ${target}[${r1}][${c1}] ↔ ${target}[${r2}][${c2}]`;
+
+    } else if (op === 'm') {
+      const k = parseFloat(document.getElementById('m-k').value);
+      result = opScale(mat, k);
+      desc = `m ${k}  →  scale ${target} × ${k}`;
+
+    } else if (op === 'a') {
+      const k = parseFloat(document.getElementById('a-k').value);
+      result = opShift(mat, k);
+      desc = `a ${k}  →  shift ${target} non-zero + ${k}`;
+
+    } else if (op === 'r') {
+      const r1 = parseInt(document.getElementById('r-r1').value);
+      const r2 = parseInt(document.getElementById('r-r2').value);
+      result = opCopyRow(mat, r1, r2);
+      desc = `r ${r1} ${r2}  →  copy ${target} row ${r1} → row ${r2}`;
+
+    } else if (op === 'c') {
+      const c1 = parseInt(document.getElementById('c-c1').value);
+      const c2 = parseInt(document.getElementById('c-c2').value);
+      result = opCopyCol(mat, c1, c2);
+      desc = `c ${c1} ${c2}  →  copy ${target} col ${c1} → col ${c2}`;
+
+    } else if (op === 'R') {
+      const r1 = parseInt(document.getElementById('R-r1').value);
+      const r2 = parseInt(document.getElementById('R-r2').value);
+      result = opSwapRows(mat, r1, r2);
+      desc = `R ${r1} ${r2}  →  swap ${target} rows ${r1} ↔ ${r2}`;
+
+    } else if (op === 'C') {
+      const c1 = parseInt(document.getElementById('C-c1').value);
+      const c2 = parseInt(document.getElementById('C-c2').value);
+      result = opSwapCols(mat, c1, c2);
+      desc = `C ${c1} ${c2}  →  swap ${target} cols ${c1} ↔ ${c2}`;
+    }
+
+    if (target === 'A') matA = result;
+    else matB = result;
+
+    log.push(desc);
+    updateMatrixDisplays();
+    updateResultDisplay(result);
+    renderLog();
+  }
+
+  /* ── Target toggle ── */
+  function setTarget(t) {
+    target = t;
+    document.getElementById('target-a').classList.toggle('active', t === 'A');
+    document.getElementById('target-b').classList.toggle('active', t === 'B');
+  }
+
+  /* ── Compare ── */
+  function compareAB() {
+    if (!matA.length || !matB.length) {
+      document.getElementById('compare-result').textContent = 'set both matrices first';
+      return;
+    }
+    if (matA.length !== matB.length) {
+      document.getElementById('compare-result').textContent = 'A ≠ B  (different dimensions)';
+      return;
+    }
+    const eq = matA.every((row, r) => row.every((v, c) => v === matB[r][c]));
+    document.getElementById('compare-result').textContent = eq ? 'A = B  ✓' : 'A ≠ B';
+  }
+
+  /* ── Log ── */
+  function renderLog() {
+    const el = document.getElementById('op-log');
+    if (log.length === 0) {
+      el.innerHTML = '<span class="log-empty">no operations applied yet</span>';
+      return;
+    }
+    el.innerHTML = log.map(e => `<div class="log-entry">${e}</div>`).join('');
+    el.scrollTop = el.scrollHeight;
+  }
+
+  /* ── Init ── */
+  document.getElementById('btn-resize').addEventListener('click', () => {
+    const newN = parseInt(document.getElementById('dim-n').value);
+    if (isNaN(newN) || newN < 2 || newN > 10) return;
+    n = newN;
+    buildInputGrid(n);
+  });
+
+  document.getElementById('btn-set-a').addEventListener('click', () => {
+    matA = readInputGrid();
+    updateMatrixDisplays();
+    updateResultDisplay(matA);
+    log.push(`→  loaded input as Matrix A (${n}×${n})`);
+    renderLog();
+  });
+
+  document.getElementById('btn-set-b').addEventListener('click', () => {
+    matB = readInputGrid();
+    updateMatrixDisplays();
+    updateResultDisplay(matB);
+    log.push(`→  loaded input as Matrix B (${n}×${n})`);
+    renderLog();
+  });
+
+  buildInputGrid(n);
+</script>
+
+</body>
+</html>
