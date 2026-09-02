@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minescaper — Yifan Bai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey-100: #f0f0f0;
+    --grey-200: #d6d6d6;
+    --grey-400: #8a8a8a;
+    --grey-600: #484848;
+    --grey-800: #1a1a1a;
+    --grey-900: #0d0d0d;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --nav-h: 56px;
+    --cell: 36px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: var(--black);
+    border-bottom: 1px solid var(--grey-800);
+    z-index: 100;
+  }
+  .nav-name {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.15s;
+  }
+  .nav-back:hover { color: var(--white); }
+  .nav-back-line {
+    width: 20px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.2s;
+  }
+  .nav-back:hover .nav-back-line { width: 28px; }
+
+  /* PAGE LAYOUT */
+  .page {
+    padding-top: var(--nav-h);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--grey-800);
+  }
+
+  /* LEFT: meta */
+  .meta {
+    padding: 64px 40px;
+    border-right: 1px solid var(--grey-800);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .meta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+  .meta-title {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--white);
+    margin-bottom: 32px;
+  }
+  .meta-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--grey-400);
+    line-height: 1.8;
+    max-width: 46ch;
+    margin-bottom: 48px;
+  }
+  .meta-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-400);
+    border: 1px solid var(--grey-800);
+    padding: 4px 10px;
+  }
+  .controls-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .controls-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 20px;
+    align-items: center;
+  }
+  .ctrl-key {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--white);
+    border: 1px solid var(--grey-600);
+    padding: 2px 8px;
+    text-align: center;
+    min-width: 32px;
+  }
+  .ctrl-desc {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-400);
+  }
+  .meta-source {
+    margin-top: auto;
+    padding-top: 40px;
+  }
+  .source-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.15s;
+  }
+  .source-link:hover { color: var(--white); }
+  .source-link-line {
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.2s;
+  }
+  .source-link:hover .source-link-line { width: 24px; }
+
+  /* RIGHT: game area */
+  .game-area {
+    padding: 64px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--grey-800);
+    padding-bottom: 16px;
+  }
+  .status-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .status-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+  }
+  .status-value {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--white);
+    font-weight: 400;
+  }
+  .status-value.danger { color: #ff4040; }
+  .status-value.win { color: var(--grey-200); }
+
+  /* BOARD */
+  .board-wrap {
+    position: relative;
+  }
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+  }
+
+  /* OVERLAY: win/lose */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .overlay.visible { display: flex; }
+  .overlay-title {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+  .overlay-sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--grey-400);
+    letter-spacing: 0.06em;
+  }
+
+  /* CONFIG CONTROLS */
+  .config-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .config-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .config-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+  }
+  .config-select {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid var(--grey-600);
+    padding: 6px 12px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 80px;
+  }
+  .config-select:focus { border-color: var(--grey-400); }
+  .config-select option { background: var(--grey-900); }
+
+  .btn-restart {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid var(--grey-600);
+    padding: 8px 20px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-restart:hover {
+    border-color: var(--white);
+  }
+
+  /* MOVE LOG */
+  .log-wrap {
+    width: 100%;
+  }
+  .log-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .log {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    height: 56px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 4px;
+  }
+  .log-entry { color: var(--grey-400); }
+  .log-entry.invalid { color: var(--grey-600); }
+  .log-entry.event { color: var(--white); }
+
+  /* FOOTER */
+  footer {
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--grey-800);
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .page { grid-template-columns: 1fr; }
+    .meta { border-right: none; border-bottom: 1px solid var(--grey-800); padding: 40px 20px; }
+    .game-area { padding: 40px 20px; }
+    nav { padding: 0 20px; }
+    footer { padding: 20px; }
+    :root { --cell: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-name">Yifan Bai</a>
+  <a href="/#work" class="nav-back">
+    <span class="nav-back-line"></span>
+    Back to work
+  </a>
+</nav>
+
+<div class="page">
+
+  <!-- LEFT META -->
+  <div class="meta">
+    <p class="meta-label">PROJECT · 2024 · Python → JS</p>
+    <h1 class="meta-title">Mine­scaper</h1>
+    <p class="meta-desc">
+      A grid-based puzzle game engine. Navigate from the top-left corner to the exit at the bottom-right without stepping on a mine. Flag suspected mines, and watch the BFS flood fill clear safe zones on every move.
+    </p>
+    <div class="meta-tags">
+      <span class="tag">Python</span>
+      <span class="tag">Algorithms</span>
+      <span class="tag">BFS</span>
+      <span class="tag">2D Arrays</span>
+    </div>
+
+    <p class="controls-title">CONTROLS</p>
+    <div class="controls-grid">
+      <span class="ctrl-key">W</span><span class="ctrl-desc">Move up</span>
+      <span class="ctrl-key">A</span><span class="ctrl-desc">Move left</span>
+      <span class="ctrl-key">S</span><span class="ctrl-desc">Move down</span>
+      <span class="ctrl-key">D</span><span class="ctrl-desc">Move right</span>
+      <span class="ctrl-key">F</span><span class="ctrl-desc">Flag / unflag current cell</span>
+      <span class="ctrl-key">R</span><span class="ctrl-desc">Restart</span>
+    </div>
+
+    <div class="meta-source">
+      <a href="https://github.com/baiyifan1999" class="source-link" target="_blank" rel="noopener">
+        <span class="source-link-line"></span>
+        View source on GitHub
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT GAME -->
+  <div class="game-area">
+
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">MINES</span>
+        <span class="status-value" id="mine-count">—</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">FLAGS</span>
+        <span class="status-value" id="flag-count">0</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">MOVES</span>
+        <span class="status-value" id="move-count">0</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">STATUS</span>
+        <span class="status-value" id="game-status">READY</span>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <canvas id="board"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="overlay-title" id="overlay-title">YOU ESCAPED</div>
+        <div class="overlay-sub" id="overlay-sub">PRESS R TO PLAY AGAIN</div>
+      </div>
+    </div>
+
+    <div class="config-row">
+      <div class="config-group">
+        <span class="config-label">GRID SIZE</span>
+        <select class="config-select" id="sel-size">
+          <option value="6">6 × 6</option>
+          <option value="8" selected>8 × 8</option>
+          <option value="10">10 × 10</option>
+          <option value="12">12 × 12</option>
+        </select>
+      </div>
+      <div class="config-group">
+        <span class="config-label">MINES</span>
+        <select class="config-select" id="sel-mines">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <button class="btn-restart" id="btn-restart">NEW GAME</button>
+    </div>
+
+    <div class="log-wrap">
+      <p class="log-label">MOVE LOG</p>
+      <div class="log" id="log"></div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span class="footer-copy">Minescaper — University of Melbourne, 2024</span>
+  <span class="footer-copy">Ported from Python</span>
+</footer>
+
+<script>
+// ─── GAME ENGINE (ported from Python) ───────────────────────────────
+
+const MINE = -1;
+const EMPTY = 0;
+
+// Equivalent to create_mine_board
+function createMineBoard(gridSize, minePositions) {
+  const grid = Array.from({length: gridSize}, () => Array(gridSize).fill(0));
+
+  // Filter out corners
+  const valid = minePositions.filter(([x, y]) =>
+    !(x === 0 && y === 0) &&
+    !(x === gridSize - 1 && y === gridSize - 1)
+  );
+
+  for (const [x, y] of valid) {
+    grid[x][y] = MINE;
+  }
+
+  // Increment adjacent non-mine cells
+  for (const [x, y] of valid) {
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        if (dx === 0 && dy === 0) continue;
+        const nx = x + dx, ny = y + dy;
+        if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize) {
+          if (grid[nx][ny] !== MINE) grid[nx][ny]++;
+        }
+      }
+    }
+  }
+  return grid;
+}
+
+// Equivalent to reveal_zeros (BFS flood fill)
+function revealZeros(mineBoard, visited, startPos) {
+  const size = mineBoard.length;
+  const newVisited = new Set(visited);
+  const toVisit = [startPos];
+
+  while (toVisit.length > 0) {
+    const [x, y] = toVisit.pop();
+    const key = `${x},${y}`;
+    if (newVisited.has(key)) continue;
+    newVisited.add(key);
+
+    if (mineBoard[x][y] === EMPTY) {
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx, ny = y + dy;
+          if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
+            const nkey = `${nx},${ny}`;
+            if (mineBoard[nx][ny] !== MINE && !newVisited.has(nkey)) {
+              toVisit.push([nx, ny]);
+            }
+          }
+        }
+      }
+    }
+  }
+  return newVisited;
+}
+
+// Generate random mine positions
+function generateMines(gridSize, count) {
+  const positions = [];
+  const taken = new Set();
+  taken.add('0,0');
+  taken.add(`${gridSize-1},${gridSize-1}`);
+
+  while (positions.length < count) {
+    const x = Math.floor(Math.random() * gridSize);
+    const y = Math.floor(Math.random() * gridSize);
+    const key = `${x},${y}`;
+    if (!taken.has(key)) {
+      taken.add(key);
+      positions.push([x, y]);
+    }
+  }
+  return positions;
+}
+
+// Mine count by difficulty
+function getMineCount(gridSize, difficulty) {
+  const cells = gridSize * gridSize;
+  const ratios = { easy: 0.10, normal: 0.16, hard: 0.22 };
+  return Math.max(2, Math.floor(cells * ratios[difficulty]));
+}
+
+// ─── RENDERER ────────────────────────────────────────────────────────
+
+const COLORS = {
+  bg:        '#000000',
+  bgAlt:     '#0d0d0d',
+  border:    '#1a1a1a',
+  visited:   '#111111',
+  hidden:    '#000000',
+  player:    '#ffffff',
+  exit:      '#484848',
+  mine:      '#ff4040',
+  flag:      '#8a8a8a',
+  text:      '#8a8a8a',
+  textBright:'#d6d6d6',
+  cursor:    '#ffffff',
+  numbers: ['', '#8a8a8a','#6a9fb5','#b5836a','#6a7fb5','#b56a6a','#6ab5a0','#ffffff','#484848']
+};
+
+class MineScaper {
+  constructor(canvasEl) {
+    this.canvas = canvasEl;
+    this.ctx = canvasEl.getContext('2d');
+    this.gridSize = 8;
+    this.difficulty = 'normal';
+    this.init();
+  }
+
+  init() {
+    const C = parseInt(document.getElementById('sel-size').value);
+    const D = document.getElementById('sel-mines').value;
+    this.gridSize = C;
+    this.difficulty = D;
+
+    const mineCount = getMineCount(C, D);
+    const mines = generateMines(C, mineCount);
+    this.board = createMineBoard(C, mines);
+    this.mineCount = mineCount;
+    this.pos = [0, 0];
+    this.visited = new Set(['0,0']);
+    this.flagged = new Set();
+    this.moves = 0;
+    this.state = 'playing'; // 'playing' | 'won' | 'dead'
+
+    // BFS from start
+    this.visited = revealZeros(this.board, this.visited, [0, 0]);
+
+    // Canvas sizing
+    const cell = getCellSize();
+    this.cell = cell;
+    this.canvas.width  = C * cell;
+    this.canvas.height = C * cell;
+
+    this.updateUI();
+    this.draw();
+    this.hideOverlay();
+    this.log(`New game — ${C}×${C}, ${mineCount} mines`, 'event');
+  }
+
+  getCellKey(x, y) { return `${x},${y}`; }
+
+  move(dir) {
+    if (this.state !== 'playing') return;
+    const [x, y] = this.pos;
+    let nx = x, ny = y;
+
+    if (dir === 'w') nx = x - 1;
+    if (dir === 's') nx = x + 1;
+    if (dir === 'a') ny = y - 1;
+    if (dir === 'd') ny = y + 1;
+
+    // Boundary check
+    if (nx < 0 || nx >= this.gridSize || ny < 0 || ny >= this.gridSize) {
+      this.log(`[${dir.toUpperCase()}] — out of bounds`, 'invalid');
+      return;
+    }
+
+    this.pos = [nx, ny];
+    this.moves++;
+
+    const key = this.getCellKey(nx, ny);
+    const val = this.board[nx][ny];
+
+    if (val === MINE) {
+      this.visited.add(key);
+      this.state = 'dead';
+      this.log(`[${dir.toUpperCase()}] → (${nx},${ny}) — MINE`, 'event');
+      this.updateUI();
+      this.draw();
+      this.showOverlay(false);
+      return;
+    }
+
+    // Reveal
+    this.visited = revealZeros(this.board, this.visited, [nx, ny]);
+
+    // Win condition: reached exit (bottom-right)
+    if (nx === this.gridSize - 1 && ny === this.gridSize - 1) {
+      this.state = 'won';
+      this.log(`[${dir.toUpperCase()}] → EXIT — ESCAPED`, 'event');
+      this.updateUI();
+      this.draw();
+      this.showOverlay(true);
+      return;
+    }
+
+    this.log(`[${dir.toUpperCase()}] → (${nx},${ny})  val:${val}`);
+    this.updateUI();
+    this.draw();
+  }
+
+  toggleFlag() {
+    if (this.state !== 'playing') return;
+    const key = this.getCellKey(...this.pos);
+    if (this.flagged.has(key)) {
+      this.flagged.delete(key);
+      this.log(`[F] — removed flag at (${this.pos[0]},${this.pos[1]})`);
+    } else {
+      this.flagged.add(key);
+      this.log(`[F] — flagged (${this.pos[0]},${this.pos[1]})`);
+    }
+    this.draw();
+    this.updateUI();
+  }
+
+  draw() {
+    const { ctx, canvas, board, gridSize, cell, visited, flagged, pos, state } = this;
+    const showAll = state !== 'playing';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let x = 0; x < gridSize; x++) {
+      for (let y = 0; y < gridSize; y++) {
+        const px = y * cell;
+        const py = x * cell;
+        const key = this.getCellKey(x, y);
+        const isCurrent = pos[0] === x && pos[1] === y;
+        const isVisited = visited.has(key);
+        const isFlagged = flagged.has(key);
+        const isExit = x === gridSize - 1 && y === gridSize - 1;
+        const val = board[x][y];
+
+        // Cell background
+        if (isVisited || showAll) {
+          ctx.fillStyle = isCurrent ? '#141414' : COLORS.visited;
+        } else {
+          ctx.fillStyle = COLORS.hidden;
+        }
+        ctx.fillRect(px, py, cell, cell);
+
+        // Grid line
+        ctx.strokeStyle = COLORS.border;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 0.5, py + 0.5, cell - 1, cell - 1);
+
+        // Current position bracket
+        if (isCurrent) {
+          ctx.strokeStyle = COLORS.cursor;
+          ctx.lineWidth = 1.5;
+          const p = 3;
+          // corner brackets
+          const bLen = 7;
+          ctx.beginPath();
+          // top-left
+          ctx.moveTo(px+p, py+p+bLen); ctx.lineTo(px+p, py+p); ctx.lineTo(px+p+bLen, py+p);
+          // top-right
+          ctx.moveTo(px+cell-p-bLen, py+p); ctx.lineTo(px+cell-p, py+p); ctx.lineTo(px+cell-p, py+p+bLen);
+          // bottom-right
+          ctx.moveTo(px+cell-p, py+cell-p-bLen); ctx.lineTo(px+cell-p, py+cell-p); ctx.lineTo(px+cell-p-bLen, py+cell-p);
+          // bottom-left
+          ctx.moveTo(px+p+bLen, py+cell-p); ctx.lineTo(px+p, py+cell-p); ctx.lineTo(px+p, py+cell-p-bLen);
+          ctx.stroke();
+        }
+
+        // Content
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const cx = px + cell / 2;
+        const cy = py + cell / 2;
+
+        if (isExit && !isCurrent) {
+          // Exit marker
+          ctx.fillStyle = COLORS.exit;
+          ctx.font = `300 ${Math.floor(cell * 0.32)}px 'DM Mono', monospace`;
+          ctx.fillText('E', cx, cy);
+        } else if (showAll && val === MINE && !isCurrent) {
+          // Revealed mine
+          ctx.fillStyle = state === 'dead' ? COLORS.mine : COLORS.flag;
+          ctx.font = `400 ${Math.floor(cell * 0.36)}px 'DM Mono', monospace`;
+          ctx.fillText('×', cx, cy);
+        } else if (!showAll && isFlagged && !isVisited && !isCurrent) {
+          ctx.fillStyle = COLORS.flag;
+          ctx.font = `300 ${Math.floor(cell * 0.28)}px 'DM Mono', monospace`;
+          ctx.fillText('F', cx, cy);
+        } else if ((isVisited || showAll) && val > 0 && val !== MINE && !isCurrent) {
+          ctx.fillStyle = COLORS.numbers[Math.min(val, 8)] || COLORS.text;
+          ctx.font = `400 ${Math.floor(cell * 0.36)}px 'DM Mono', monospace`;
+          ctx.fillText(String(val), cx, cy);
+        }
+      }
+    }
+  }
+
+  updateUI() {
+    document.getElementById('mine-count').textContent = this.mineCount;
+    document.getElementById('flag-count').textContent = this.flagged.size;
+    document.getElementById('move-count').textContent = this.moves;
+
+    const statusEl = document.getElementById('game-status');
+    if (this.state === 'playing') {
+      statusEl.textContent = 'PLAYING';
+      statusEl.className = 'status-value';
+    } else if (this.state === 'won') {
+      statusEl.textContent = 'ESCAPED';
+      statusEl.className = 'status-value win';
+    } else {
+      statusEl.textContent = 'DEAD';
+      statusEl.className = 'status-value danger';
+    }
+  }
+
+  log(msg, type = '') {
+    const logEl = document.getElementById('log');
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${type}`;
+    entry.textContent = msg;
+    logEl.prepend(entry);
+    // Keep max 30 entries
+    while (logEl.children.length > 30) logEl.removeChild(logEl.lastChild);
+  }
+
+  showOverlay(won) {
+    const overlay = document.getElementById('overlay');
+    document.getElementById('overlay-title').textContent = won ? 'YOU ESCAPED' : 'MINE HIT';
+    document.getElementById('overlay-sub').textContent = `${this.moves} moves  ·  PRESS R TO RESTART`;
+    overlay.classList.add('visible');
+  }
+
+  hideOverlay() {
+    document.getElementById('overlay').classList.remove('visible');
+  }
+}
+
+// ─── CELL SIZE ──────────────────────────────────────────────────────
+function getCellSize() {
+  const gridSize = parseInt(document.getElementById('sel-size').value);
+  const availW = Math.min(
+    window.innerWidth < 900 ? window.innerWidth - 40 : window.innerWidth / 2 - 80,
+    520
+  );
+  return Math.floor(Math.min(availW / gridSize, 48));
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────
+const canvas = document.getElementById('board');
+const game = new MineScaper(canvas);
+
+// Keyboard handler — WASD + F + R
+document.addEventListener('keydown', (e) => {
+  const key = e.key.toLowerCase();
+  if (['w','a','s','d'].includes(key)) {
+    e.preventDefault();
+    game.move(key);
+  } else if (key === 'f') {
+    e.preventDefault();
+    game.toggleFlag();
+  } else if (key === 'r') {
+    e.preventDefault();
+    game.init();
+  }
+});
+
+document.getElementById('btn-restart').addEventListener('click', () => game.init());
+document.getElementById('sel-size').addEventListener('change', () => game.init());
+document.getElementById('sel-mines').addEventListener('change', () => game.init());
+
+// Resize
+window.addEventListener('resize', () => {
+  game.cell = getCellSize();
+  game.canvas.width  = game.gridSize * game.cell;
+  game.canvas.height = game.gridSize * game.cell;
+  game.draw();
+});
+</script>
+</body>
+</html>
