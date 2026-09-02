@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preferential Voting Simulation — Yifan Bai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey-100: #f0f0f0;
+    --grey-200: #e0e0e0;
+    --grey-400: #c0c0c0;
+    --grey-600: #484848;
+    --grey-800: #1a1a1a;
+    --grey-900: #0d0d0d;
+
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+
+    --nav-h: 56px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: var(--black);
+    border-bottom: 1px solid var(--grey-800);
+    z-index: 100;
+  }
+
+  .nav-name {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    padding: calc(var(--nav-h) + 60px) 40px 48px;
+    border-bottom: 1px solid var(--grey-800);
+  }
+
+  .page-header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .page-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--grey-400);
+    max-width: 52ch;
+    line-height: 1.7;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 64px 40px 120px;
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--grey-800);
+    margin-bottom: 28px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+
+  /* ─── FORM BLOCKS ─── */
+  .block {
+    margin-bottom: 52px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--grey-900);
+    border: 1px solid var(--grey-800);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--grey-600);
+  }
+
+  input[type="text"]::placeholder {
+    color: var(--grey-600);
+  }
+
+  button {
+    background: transparent;
+    border: 1px solid var(--grey-800);
+    color: var(--grey-400);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    border-color: var(--grey-600);
+    color: var(--white);
+  }
+
+  button.primary {
+    border-color: var(--white);
+    color: var(--white);
+  }
+
+  button.primary:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  button.danger:hover {
+    border-color: var(--grey-400);
+    color: var(--grey-200);
+  }
+
+  /* ─── CANDIDATE LIST ─── */
+  .candidate-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--grey-800);
+    border: 1px solid var(--grey-800);
+    margin-bottom: 0;
+  }
+
+  .candidate-item {
+    background: var(--black);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .candidate-item:hover { background: var(--grey-900); }
+
+  .candidate-name {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--white);
+  }
+
+  .candidate-index {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    margin-right: 12px;
+  }
+
+  .candidate-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .remove-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.15s;
+    letter-spacing: 0;
+  }
+
+  .remove-btn:hover {
+    color: var(--grey-200);
+    border: none;
+    background: none;
+  }
+
+  .empty-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    padding: 16px 0;
+  }
+
+  /* ─── VOTE INPUT ─── */
+  .vote-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--grey-800);
+    background: var(--grey-900);
+  }
+
+  .vote-rank-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 80px;
+  }
+
+  .vote-rank-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+  }
+
+  select {
+    background: var(--black);
+    border: 1px solid var(--grey-800);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 10px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23484848'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
+  }
+
+  select:focus { border-color: var(--grey-600); }
+
+  /* ─── VOTES TABLE ─── */
+  .votes-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--grey-800);
+    font-size: 13px;
+  }
+
+  .votes-table th {
+    background: var(--grey-900);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid var(--grey-800);
+  }
+
+  .votes-table td {
+    background: var(--black);
+    padding: 10px 12px;
+    border: 1px solid var(--grey-800);
+    color: var(--grey-200);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .votes-table tr:hover td { background: var(--grey-900); }
+
+  .votes-table td.rank-cell {
+    text-align: center;
+    color: var(--grey-400);
+  }
+
+  .votes-table td.vote-num {
+    color: var(--grey-600);
+    font-size: 10px;
+  }
+
+  /* ─── ACTION BAR ─── */
+  .action-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid var(--grey-800);
+  }
+
+  .action-bar .spacer { flex: 1; }
+
+  .error-msg {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-400);
+    display: none;
+  }
+
+  .error-msg.visible { display: block; }
+
+  /* ─── RESULTS ─── */
+  #results {
+    margin-top: 56px;
+    border-top: 1px solid var(--grey-800);
+    display: none;
+  }
+
+  #results.visible { display: block; }
+
+  .results-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 32px 0 16px;
+    border-bottom: 1px solid var(--grey-800);
+    margin-bottom: 32px;
+  }
+
+  .results-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .results-summary {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+  }
+
+  /* ─── ROUND BLOCK ─── */
+  .round-block {
+    margin-bottom: 24px;
+    border: 1px solid var(--grey-800);
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  .round-block.is-winner {
+    border-color: var(--grey-600);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .round-label {
+    padding: 12px 20px;
+    background: var(--grey-900);
+    border-bottom: 1px solid var(--grey-800);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .round-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    letter-spacing: 0.08em;
+  }
+
+  .round-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border: 1px solid var(--grey-600);
+    color: var(--grey-400);
+  }
+
+  .round-tag.winner-tag {
+    border-color: var(--white);
+    color: var(--white);
+  }
+
+  /* ─── CANDIDATE ROW IN RESULTS ─── */
+  .result-rows { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  .result-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 60px 40px;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .result-name {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .result-name.eliminated { color: var(--grey-600); text-decoration: line-through; }
+  .result-name.winner-name { color: var(--white); font-weight: 400; }
+
+  .result-bar-track {
+    height: 4px;
+    background: var(--grey-800);
+    overflow: hidden;
+  }
+
+  .result-bar-fill {
+    height: 100%;
+    background: var(--white);
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: barGrow 0.5s ease forwards;
+    animation-delay: inherit;
+  }
+
+  .result-bar-fill.eliminated { background: var(--grey-600); }
+
+  @keyframes barGrow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .result-pct {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-400);
+    text-align: right;
+  }
+
+  .result-votes {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--grey-600);
+    text-align: right;
+  }
+
+  .eliminated-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey-600);
+    letter-spacing: 0.06em;
+    padding: 10px 20px;
+    border-top: 1px solid var(--grey-800);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    nav { padding: 0 20px; }
+    .page-header { padding: calc(var(--nav-h) + 40px) 20px 36px; }
+    .content { padding: 40px 20px 80px; }
+
+    .result-row {
+      grid-template-columns: 100px 1fr 48px 36px;
+      gap: 10px;
+    }
+
+    .vote-rank-group { min-width: 64px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .round-block { animation: none; opacity: 1; }
+    .result-bar-fill { animation: none; transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-name">Yifan Bai</a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="page-label">Interactive Demo · 2025</p>
+    <h1 class="page-title">Preferential Voting<br>Simulation</h1>
+    <p class="page-desc">Add candidates and ballots, then run the election to watch instant-runoff voting resolve round by round. Each losing candidate is eliminated and their votes redistributed until one candidate holds a majority.</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+  <!-- CANDIDATES -->
+  <div class="block">
+    <div class="section-header">
+      <span class="section-title">Candidates</span>
+      <span class="section-label" id="candidate-count">0 added</span>
+    </div>
+
+    <div class="input-row">
+      <input type="text" id="candidate-input" placeholder="Candidate name" maxlength="40" />
+      <button onclick="addCandidate()">Add Candidate</button>
+    </div>
+
+    <div id="candidate-list" class="candidate-list" style="display:none"></div>
+    <p class="empty-hint" id="candidate-empty">No candidates yet. Add at least two to run an election.</p>
+  </div>
+
+  <!-- BALLOTS -->
+  <div class="block">
+    <div class="section-header">
+      <span class="section-title">Ballots</span>
+      <span class="section-label" id="vote-count">0 added</span>
+    </div>
+
+    <div id="vote-input-area">
+      <p class="empty-hint" id="vote-empty-hint">Add at least two candidates to begin entering ballots.</p>
+      <div id="vote-rank-row" class="vote-input-row" style="display:none">
+        <!-- rank dropdowns inserted by JS -->
+      </div>
+    </div>
+
+    <div id="votes-table-wrap" style="display:none">
+      <table class="votes-table" id="votes-table">
+        <thead id="votes-table-head"></thead>
+        <tbody id="votes-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="action-bar">
+    <button onclick="loadExample()">Load Example</button>
+    <span class="error-msg" id="error-msg"></span>
+    <span class="spacer"></span>
+    <button class="primary" onclick="runElection()">Run Election →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="results-header">
+      <span class="results-title">Results</span>
+      <span class="results-summary" id="results-summary"></span>
+    </div>
+    <div id="results-body"></div>
+  </div>
+
+</div><!-- /content -->
+
+<script>
+  // ─── STATE ───────────────────────────────────────────────────────────────────
+  let candidates = []; // string[]
+  let votes = [];      // string[][] — each inner array is ballot in rank order
+
+  // ─── IRV ALGORITHM ──────────────────────────────────────────────────────────
+  /**
+   * runIRV(candidates, votes)
+   *
+   * @param {string[]} candidates  — ordered list of candidate names
+   * @param {string[][]} votes     — each vote is a ballot in preference order (rank 1 first)
+   * @returns {RoundResult[]}
+   *
+   * RoundResult: {
+   *   roundNum: number,
+   *   tallies: { candidate: string, votes: number, percent: number, isWinner: bool, isEliminated: bool }[],
+   *   eliminated: string | null,   // candidate eliminated this round (null if winner found)
+   *   winner: string | null
+   * }
+   *
+   * Tie-breaking: when multiple candidates share the lowest vote count, eliminate
+   * the one appearing earliest in the original candidates array.
+   */
+  function runIRV(candidates, votes) {
+    const rounds = [];
+    let active = [...candidates]; // candidates still in the race
+
+    while (active.length > 1) {
+      // Tally first active preference on each ballot
+      const tally = Object.fromEntries(active.map(c => [c, 0]));
+      for (const ballot of votes) {
+        for (const pref of ballot) {
+          if (active.includes(pref)) {
+            tally[pref]++;
+            break;
+          }
+        }
+      }
+
+      const total = Object.values(tally).reduce((a, b) => a + b, 0);
+
+      // Check for majority winner
+      const winner = active.find(c => tally[c] > total / 2) || null;
+
+      // Build tallies preserving original candidate order
+      const tallies = candidates
+        .filter(c => active.includes(c))
+        .map(c => ({
+          candidate: c,
+          votes: tally[c],
+          percent: total > 0 ? (tally[c] / total) * 100 : 0,
+          isWinner: c === winner,
+          isEliminated: false,
+        }));
+
+      if (winner) {
+        rounds.push({ roundNum: rounds.length + 1, tallies, eliminated: null, winner });
+        break;
+      }
+
+      // Find lowest vote count; break ties by original candidate order (already preserved)
+      const minVotes = Math.min(...active.map(c => tally[c]));
+      const eliminated = candidates.find(c => active.includes(c) && tally[c] === minVotes);
+
+      // Mark eliminated in this round's tallies
+      tallies.find(t => t.candidate === eliminated).isEliminated = true;
+
+      rounds.push({ roundNum: rounds.length + 1, tallies, eliminated, winner: null });
+
+      active = active.filter(c => c !== eliminated);
+    }
+
+    // Edge case: last candidate standing (no majority ever reached — e.g. single candidate)
+    if (active.length === 1 && (rounds.length === 0 || rounds[rounds.length - 1].winner !== active[0])) {
+      const tally = { [active[0]]: votes.length };
+      rounds.push({
+        roundNum: rounds.length + 1,
+        tallies: [{ candidate: active[0], votes: votes.length, percent: 100, isWinner: true, isEliminated: false }],
+        eliminated: null,
+        winner: active[0],
+      });
+    }
+
+    return rounds;
+  }
+
+  // ─── CANDIDATE MANAGEMENT ────────────────────────────────────────────────────
+  function addCandidate() {
+    const input = document.getElementById('candidate-input');
+    const name = input.value.trim();
+    if (!name) return;
+    if (candidates.includes(name)) {
+      showError(`"${name}" is already in the list.`);
+      return;
+    }
+    candidates.push(name);
+    input.value = '';
+    clearError();
+    renderCandidates();
+    renderVoteInput();
+    rebuildVoteTableHeader();
+  }
+
+  function removeCandidate(name) {
+    candidates = candidates.filter(c => c !== name);
+    // Remove any votes that referenced this candidate (all votes must be re-checked)
+    votes = votes.filter(ballot => ballot.includes(name) ? false : true);
+    // Actually keep ballots that still contain all remaining candidates
+    // Simpler: strip missing candidates from each ballot and drop incomplete ones
+    votes = votes
+      .map(ballot => ballot.filter(c => candidates.includes(c)))
+      .filter(ballot => ballot.length === candidates.length);
+    renderCandidates();
+    renderVoteInput();
+    rebuildVoteTableHeader();
+    renderVoteTable();
+    updateVoteCount();
+    hideResults();
+  }
+
+  function renderCandidates() {
+    const list = document.getElementById('candidate-list');
+    const empty = document.getElementById('candidate-empty');
+    const count = document.getElementById('candidate-count');
+
+    count.textContent = `${candidates.length} added`;
+
+    if (candidates.length === 0) {
+      list.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+    list.style.display = 'flex';
+    list.innerHTML = candidates.map((name, i) => `
+      <div class="candidate-item">
+        <div class="candidate-left">
+          <span class="candidate-index">${String(i + 1).padStart(2, '0')}</span>
+          <span class="candidate-name">${escHtml(name)}</span>
+        </div>
+        <button class="remove-btn" onclick="removeCandidate('${escAttr(name)}')">Remove</button>
+      </div>
+    `).join('');
+  }
+
+  // ─── VOTE INPUT ──────────────────────────────────────────────────────────────
+  function renderVoteInput() {
+    const hint = document.getElementById('vote-empty-hint');
+    const rankRow = document.getElementById('vote-rank-row');
+
+    if (candidates.length < 2) {
+      hint.style.display = 'block';
+      rankRow.style.display = 'none';
+      return;
+    }
+
+    hint.style.display = 'none';
+    rankRow.style.display = 'flex';
+
+    // Build a dropdown per candidate
+    rankRow.innerHTML = candidates.map(name => `
+      <div class="vote-rank-group">
+        <span class="vote-rank-label">${escHtml(name.length > 8 ? name.slice(0, 7) + '…' : name)}</span>
+        <select data-candidate="${escAttr(name)}">
+          <option value="">—</option>
+          ${candidates.map((_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+        </select>
+      </div>
+    `).join('') + `<button onclick="addVote()" style="align-self:flex-end;margin-left:8px;">Add Ballot</button>`;
+  }
+
+  function addVote() {
+    const selects = document.querySelectorAll('#vote-rank-row select');
+    const ranked = {}; // candidate → rank
+
+    for (const sel of selects) {
+      if (!sel.value) {
+        showError('Assign a rank to every candidate before adding the ballot.');
+        return;
+      }
+      ranked[sel.dataset.candidate] = parseInt(sel.value);
+    }
+
+    // Check for duplicate ranks
+    const rankValues = Object.values(ranked);
+    if (new Set(rankValues).size !== rankValues.length) {
+      showError('Each rank must be unique — no two candidates can share the same rank.');
+      return;
+    }
+
+    // Convert to ballot array (sorted by rank, ascending)
+    const ballot = candidates.slice().sort((a, b) => ranked[a] - ranked[b]);
+    votes.push(ballot);
+
+    clearError();
+    renderVoteTable();
+    updateVoteCount();
+    hideResults();
+
+    // Reset dropdowns
+    selects.forEach(sel => (sel.value = ''));
+  }
+
+  function removeVote(index) {
+    votes.splice(index, 1);
+    renderVoteTable();
+    updateVoteCount();
+    hideResults();
+  }
+
+  function updateVoteCount() {
+    document.getElementById('vote-count').textContent = `${votes.length} added`;
+  }
+
+  function rebuildVoteTableHeader() {
+    const thead = document.getElementById('votes-table-head');
+    if (candidates.length === 0) { thead.innerHTML = ''; return; }
+    thead.innerHTML = `<tr>
+      <th>#</th>
+      ${candidates.map(c => `<th>${escHtml(c)}</th>`).join('')}
+      <th></th>
+    </tr>`;
+  }
+
+  function renderVoteTable() {
+    const wrap = document.getElementById('votes-table-wrap');
+    const tbody = document.getElementById('votes-table-body');
+
+    if (votes.length === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+
+    wrap.style.display = 'block';
+    tbody.innerHTML = votes.map((ballot, vi) => {
+      // For each candidate, find their rank in this ballot
+      const rankOf = c => ballot.indexOf(c) + 1;
+      return `<tr>
+        <td class="vote-num">${vi + 1}</td>
+        ${candidates.map(c => `<td class="rank-cell">${rankOf(c)}</td>`).join('')}
+        <td><button class="remove-btn" onclick="removeVote(${vi})">Remove</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ─── ELECTION ────────────────────────────────────────────────────────────────
+  function runElection() {
+    clearError();
+
+    if (candidates.length < 2) {
+      showError('Add at least 2 candidates to run an election.');
+      return;
+    }
+    if (votes.length < 1) {
+      showError('Add at least 1 ballot to run an election.');
+      return;
+    }
+    // All votes should be complete (guaranteed by addVote validation, but double-check)
+    if (votes.some(ballot => ballot.length !== candidates.length)) {
+      showError('Some ballots are incomplete. Remove them and re-add with complete rankings.');
+      return;
+    }
+
+    const rounds = runIRV(candidates, votes);
+    renderResults(rounds);
+  }
+
+  function renderResults(rounds) {
+    const container = document.getElementById('results');
+    const body = document.getElementById('results-body');
+    const summary = document.getElementById('results-summary');
+
+    const winner = rounds[rounds.length - 1].winner;
+    summary.textContent = `${rounds.length} round${rounds.length !== 1 ? 's' : ''} · winner: ${winner}`;
+
+    body.innerHTML = rounds.map((round, ri) => {
+      const isWinnerRound = !!round.winner;
+      const delay = ri * 120; // ms stagger per round
+
+      const rowsHtml = round.tallies.map(t => {
+        const barWidth = t.percent.toFixed(1);
+        const nameClass = t.isEliminated ? 'eliminated' : (t.isWinner ? 'winner-name' : '');
+        const barClass = t.isEliminated ? 'eliminated' : '';
+        return `
+          <div class="result-row" style="animation-delay:${delay + 60}ms">
+            <span class="result-name ${nameClass}">${escHtml(t.candidate)}</span>
+            <div class="result-bar-track">
+              <div class="result-bar-fill ${barClass}" style="width:${barWidth}%; animation-delay:${delay + 80}ms"></div>
+            </div>
+            <span class="result-pct">${t.percent.toFixed(0)}%</span>
+            <span class="result-votes">${t.votes}</span>
+          </div>`;
+      }).join('');
+
+      const tagHtml = isWinnerRound
+        ? `<span class="round-tag winner-tag">WINNER</span>`
+        : `<span class="round-tag">ELIMINATED: ${escHtml(round.eliminated)}</span>`;
+
+      return `
+        <div class="round-block ${isWinnerRound ? 'is-winner' : ''}" style="animation-delay:${delay}ms">
+          <div class="round-label">
+            <span class="round-num">ROUND ${round.roundNum}</span>
+            ${tagHtml}
+          </div>
+          <div class="result-rows">${rowsHtml}</div>
+        </div>`;
+    }).join('');
+
+    container.classList.add('visible');
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function hideResults() {
+    const container = document.getElementById('results');
+    container.classList.remove('visible');
+    document.getElementById('results-body').innerHTML = '';
+  }
+
+  // ─── PRESET EXAMPLE ──────────────────────────────────────────────────────────
+  /**
+   * Classic 4-candidate, 11-ballot example demonstrating 3-round IRV:
+   *
+   * Round 1: Alice 4, Carol 3, Bob 2, Dave 2  → eliminate Bob (tied with Dave; listed first)
+   * Round 2: Alice 5, Carol 4, Dave 2          → eliminate Dave
+   * Round 3: Alice 6, Carol 5                  → Alice wins (>5.5)
+   */
+  function loadExample() {
+    candidates = ['Alice', 'Bob', 'Carol', 'Dave'];
+
+    votes = [
+      ['Alice', 'Bob',   'Carol', 'Dave'], // Alice first choice
+      ['Alice', 'Bob',   'Carol', 'Dave'],
+      ['Alice', 'Carol', 'Bob',   'Dave'],
+      ['Alice', 'Carol', 'Bob',   'Dave'],
+      ['Bob',   'Alice', 'Carol', 'Dave'], // Bob first choice — goes to Alice on elim
+      ['Bob',   'Carol', 'Alice', 'Dave'], // Bob → Carol on elim
+      ['Carol', 'Bob',   'Alice', 'Dave'], // Carol first choice
+      ['Carol', 'Bob',   'Alice', 'Dave'],
+      ['Carol', 'Bob',   'Alice', 'Dave'],
+      ['Dave',  'Bob',   'Alice', 'Carol'], // Dave → Bob on elim (round 2: Alice)
+      ['Dave',  'Carol', 'Bob',   'Alice'], // Dave → Carol on elim
+    ];
+
+    clearError();
+    hideResults();
+    renderCandidates();
+    renderVoteInput();
+    rebuildVoteTableHeader();
+    renderVoteTable();
+    updateVoteCount();
+  }
+
+  // ─── HELPERS ─────────────────────────────────────────────────────────────────
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  function clearError() {
+    const el = document.getElementById('error-msg');
+    el.textContent = '';
+    el.classList.remove('visible');
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function escAttr(str) {
+    return str.replace(/'/g, "\\'");
+  }
+
+  // Allow Enter key in candidate input
+  document.getElementById('candidate-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addCandidate();
+  });
+</script>
+
+</body>
+</html>
