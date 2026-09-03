@@ -38,6 +38,16 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ─── LANG-ZH ─── */
+  .lang-zh {
+    color: var(--grey-400);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-top: 8px;
+    max-width: 38ch;
+  }
+
   /* ─── BILINGUAL ─── */
   .zh {
     display: block;
@@ -558,6 +568,7 @@
         <h2 class="project-title">Minescaper</h2>
         <span style="font-family:var(--font-mono);font-size:12px;color:var(--grey-400);display:block;margin-top:4px;">扫雷游戏</span>
         <p class="project-desc">Grid-based puzzle engine. Navigate to the exit without hitting a mine — BFS flood fill, matrix state management, recursive expansion.</p>
+        <p class="lang-zh">网格解谜引擎。在不触雷的情况下找到出口——BFS 洪水填充、矩阵状态管理、递归扩展。</p>
         <a href="minescaper.html" class="project-link">
           <span class="project-link-line"></span>
           Play in browser
@@ -575,6 +586,7 @@
         <h2 class="project-title">Preferential Voting Simulation</h2>
         <span style="font-family:var(--font-mono);font-size:12px;color:var(--grey-400);display:block;margin-top:4px;">优先投票模拟器</span>
         <p class="project-desc">An interactive IRV simulator. Add candidates, build ballots, and watch instant-runoff voting resolve round by round.</p>
+        <p class="lang-zh">用 C 实现即时决选制投票模拟，含逐轮淘汰与票数再分配逻辑。</p>
         <a href="irv-demo.html" class="project-link">
           <span class="project-link-line"></span>
           Try the demo →
@@ -592,6 +604,7 @@
         <h2 class="project-title">Sparse Matrix Calculator</h2>
         <span style="font-family:var(--font-mono);font-size:12px;color:var(--grey-400);display:block;margin-top:4px;">稀疏矩阵求解器</span>
         <p class="project-desc">Interactive port of a COMP10002 assignment — CSR representation, O(n+k) space, eight matrix operations.</p>
+        <p class="lang-zh">用 C 实现稀疏矩阵变换，空间复杂度 O(n+k)，支持多种矩阵操作指令。</p>
         <a href="/tools/matrix-calculator.html" class="project-link">
           <span class="project-link-line"></span>
           View project
@@ -609,6 +622,7 @@
         <h2 class="project-title">Textoggle</h2>
         <span style="font-family:var(--font-mono);font-size:12px;color:var(--grey-400);display:block;margin-top:4px;">文字翻转拼字游戏</span>
         <p class="project-desc">A grid-based word game engine. Find adjacent letters to form words, score points, and watch the board collapse and refill.</p>
+        <p class="lang-zh">基于图遍历的网格单词搜索引擎，含字典验证与模块化评分逻辑。</p>
         <a href="/textoggle/" class="project-link">
           <span class="project-link-line"></span>
           Play game
@@ -864,13 +878,10 @@
       Get in touch
       <span class="zh">联系我</span>
     </h2>
-    <a href="mailto:yifanbai2026@outlook.com" class="contact-email">yifanbai2026@outlook.com</a>
-    <a href="https://github.com/baiyifan1999" target="_blank" rel="noopener" class="contact-email" style="margin-top:16px;">github.com/baiyifan1999</a>
-    <br>
-    <a href="https://www.linkedin.com/in/yifanbaiyifanbai" target="_blank" rel="noopener" class="contact-email" style="margin-top:16px;">linkedin.com/in/yifanbaiyifanbai</a>
-    <div class="contact-links">
-      <a href="https://github.com/baiyifan1999" target="_blank" rel="noopener" class="contact-link">GitHub</a>
-      <a href="https://www.linkedin.com/in/yifanbaiyifanbai" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <a href="mailto:yifanbai2026@outlook.com" class="contact-email">yifanbai2026@outlook.com</a>
+      <a href="https://github.com/baiyifan1999" class="contact-email" target="_blank" rel="noopener">github.com/baiyifan1999</a>
+      <a href="https://www.linkedin.com/in/yifanbaiyifanbai" class="contact-email" target="_blank" rel="noopener">linkedin.com/in/yifanbaiyifanbai</a>
     </div>
   </div>
 </section>
